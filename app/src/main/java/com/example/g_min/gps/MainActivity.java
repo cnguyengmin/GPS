@@ -4,7 +4,10 @@ import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
+import android.graphics.Color;
 import android.location.Location;
+import android.nfc.Tag;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -23,6 +27,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 public class MainActivity extends AppCompatActivity implements Observer {
+    private static final String TAG = "";
     private ListView listView;
     private ArrayList<String> list;
     private Button button;
@@ -67,8 +72,6 @@ public class MainActivity extends AppCompatActivity implements Observer {
                     PERMISSION_REQUEST_CODE
             );
         }
-
-
     }
 
     public boolean isPermissions_granted() {
@@ -110,7 +113,6 @@ public class MainActivity extends AppCompatActivity implements Observer {
             MainActivity.this.currentLoc.setLatitude(lat);
             MainActivity.this.currentLoc.setLongitude(lon);
             MainActivity.this.currentLoc.setTime(time);
-
         }
 
     }
@@ -127,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
             public void run() {
 
                 if (initLoc == null) {
-                    System.out.println("TEST4");
+
                     MainActivity.this.initLoc = new Location("");
                     MainActivity.this.initLoc.setLatitude(currentLoc.getLatitude());
                     MainActivity.this.initLoc.setLongitude(currentLoc.getLongitude());
@@ -136,9 +138,11 @@ public class MainActivity extends AppCompatActivity implements Observer {
                     MainActivity.this.totalDistance = 0.0f;
                     MainActivity.this.btwVelocity = 0.0f;
                     MainActivity.this.totalVelocity = 0.0f;
+                    //MainActivity.this.instaVelocity = 0.0f;
 
                     MainActivity.this.prevLoc = initLoc;
-                    data = initLoc.getLatitude() +","+initLoc.getLongitude()+","+btwDistance+","+totalDistance +"," +btwVelocity + ","+ totalVelocity+ ","+ instaVelocity;
+                    data = initLoc.getLatitude() +","+initLoc.getLongitude()+"," + btwDistance
+                            +","+totalDistance +"," +btwVelocity + ","+ totalVelocity+ "," + instaVelocity;
 
                 } else {
                     MainActivity.this.btwDistance = currentLoc.distanceTo(prevLoc);
@@ -146,12 +150,12 @@ public class MainActivity extends AppCompatActivity implements Observer {
                     MainActivity.this.instaVelocity = currentLoc.getSpeed();
                     MainActivity.this.btwVelocity = btwDistance / (currentLoc.getTime() - prevLoc.getTime());
                     MainActivity.this.totalVelocity = totalDistance / (currentLoc.getTime() - initLoc.getTime());
-                    data = currentLoc.getLatitude() +","+currentLoc.getLongitude()+","+btwDistance+","+totalDistance +"," +btwVelocity + ","+ totalVelocity+","+ instaVelocity;
+                    data = currentLoc.getLatitude() +"," + currentLoc.getLongitude() +","+btwDistance
+                            + ","+totalDistance +"," +btwVelocity + ","+ totalVelocity + "," + instaVelocity;
                 }
 
 
                 MainActivity.this.prevLoc = currentLoc;
-                System.out.println(prevLoc);
 
                 if(preferences.getBoolean("CLICKED", true)){
                     list.add(0, data);
@@ -188,10 +192,13 @@ public class MainActivity extends AppCompatActivity implements Observer {
             return position;
         }
 
+
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             String [] data = (list.get(position).split(","));
+
+
             if(convertView == null){
                 convertView = getLayoutInflater().inflate(R.layout.the_list, null, false);
             }
@@ -207,9 +214,25 @@ public class MainActivity extends AppCompatActivity implements Observer {
 
             ((TextView) convertView.findViewById(R.id.totalvelocity)).setText(data[5]);
 
-            ((TextView) convertView.findViewById(R.id.instancevelocity)).setText(data[6]);
+            ((TextView) convertView.findViewById(R.id.instavelocity)).setText(data[6]);
+
+            convertView.setBackgroundColor(R.drawable.yellow);
 
             return convertView;
         }
+    }
+
+    // rotation
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE)
+        {
+            Log.d(TAG, "landscape");
+        }
+        else{
+            Log.d(TAG, "portrait");
+        }
+
     }
 }

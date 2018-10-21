@@ -8,8 +8,7 @@
     <GridLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="@drawable/button">
+        android:orientation="vertical">
 
         <TextView
 
@@ -17,8 +16,7 @@
             android:layout_row="0"
             android:fontFamily="@font/wellfleet"
             android:text="Current Location"
-            android:textColor="#153F0D"
-            />
+            android:textColor="#153F0D" />
 
         <TextView
 
