@@ -35,7 +35,8 @@ public class MainActivity extends AppCompatActivity implements Observer {
     private Location initLoc = null;
     private Location currentLoc = null;
     private Location prevLoc = null;
-    private float btwDistance, totalDistance, instaVelocity, btwVelocity, totalVelocity;
+    private float btwDistance, totalDistance, btwVelocity, totalVelocity;
+    private double instaVelocity;
     private String data;
     private boolean permissions_granted;
     private final static int PERMISSION_REQUEST_CODE = 999;
@@ -141,8 +142,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
                     MainActivity.this.instaVelocity = 0.0f;
 
                     MainActivity.this.prevLoc = initLoc;
-               //    data = initLoc.getLatitude() +","+initLoc.getLongitude()+"," + btwDistance
-                //            +","+totalDistance +"," +btwVelocity + ","+ totalVelocity+ "," + instaVelocity;
+
 
                     data = initLoc.getLatitude() + "," + ";"+initLoc.getLongitude()+";" + btwDistance + " m"
                             +";"+totalDistance + " m" + ";" +btwVelocity + " m/s" + ";"+ totalVelocity+ " m/s" +
@@ -151,13 +151,22 @@ public class MainActivity extends AppCompatActivity implements Observer {
                 } else {
                     MainActivity.this.btwDistance = currentLoc.distanceTo(prevLoc);
                     MainActivity.this.totalDistance = currentLoc.distanceTo(initLoc);
-                    MainActivity.this.instaVelocity = currentLoc.getSpeed();
 
-                    String string = " Velocity: "+instaVelocity;
-                    Log.e(TAG, string);
+                    /**
+                     * Refer to https://stackoverflow.com/questions/4811920/why-getspeed-always-return-0-on-android
+                     */
+                    if (prevLoc != null)
+                        MainActivity.this.instaVelocity = Math.sqrt(
+                                Math.pow(currentLoc.getLongitude() - prevLoc.getLongitude(), 2)
+                                        + Math.pow(currentLoc.getLatitude() - prevLoc.getLatitude(), 2)
+                        ) / (currentLoc.getTime() - prevLoc.getTime());
+                    //if there is speed from location
+                    if (currentLoc.hasSpeed())
+                        MainActivity.this.instaVelocity = currentLoc.getSpeed();
 
                     MainActivity.this.btwVelocity = btwDistance / (currentLoc.getTime() - prevLoc.getTime());
                     MainActivity.this.totalVelocity = totalDistance / (currentLoc.getTime() - initLoc.getTime());
+
 
                     data = initLoc.getLatitude() + "," + ";"+initLoc.getLongitude()+";" + btwDistance + " m"
                             +";"+totalDistance + " m" + ";" +btwVelocity + " m/s" + ";"+ totalVelocity+ " m/s" +
