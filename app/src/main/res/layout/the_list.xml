@@ -35,6 +35,12 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:id="@+id/instancevelocity"
+            android:text="v2"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:id="@+id/velocity2points"
             android:text="v2"/>
 
