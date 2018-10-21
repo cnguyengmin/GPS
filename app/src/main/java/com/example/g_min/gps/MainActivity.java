@@ -138,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
                     MainActivity.this.totalVelocity = 0.0f;
 
                     MainActivity.this.prevLoc = initLoc;
-                    data = initLoc.getLatitude() +","+initLoc.getLongitude()+","+btwDistance+","+totalDistance +"," +btwVelocity + ","+ totalVelocity;
+                    data = initLoc.getLatitude() +","+initLoc.getLongitude()+","+btwDistance+","+totalDistance +"," +btwVelocity + ","+ totalVelocity+ ","+ instaVelocity;
 
                 } else {
                     MainActivity.this.btwDistance = currentLoc.distanceTo(prevLoc);
@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
                     MainActivity.this.instaVelocity = currentLoc.getSpeed();
                     MainActivity.this.btwVelocity = btwDistance / (currentLoc.getTime() - prevLoc.getTime());
                     MainActivity.this.totalVelocity = totalDistance / (currentLoc.getTime() - initLoc.getTime());
-                    data = currentLoc.getLatitude() +","+currentLoc.getLongitude()+","+btwDistance+","+totalDistance +"," +btwVelocity + ","+ totalVelocity;
+                    data = currentLoc.getLatitude() +","+currentLoc.getLongitude()+","+btwDistance+","+totalDistance +"," +btwVelocity + ","+ totalVelocity+","+ instaVelocity;
                 }
 
 
@@ -206,6 +206,8 @@ public class MainActivity extends AppCompatActivity implements Observer {
             ((TextView) convertView.findViewById(R.id.velocity2points)).setText(data[4]);
 
             ((TextView) convertView.findViewById(R.id.totalvelocity)).setText(data[5]);
+
+            ((TextView) convertView.findViewById(R.id.instancevelocity)).setText(data[6]);
 
             return convertView;
         }
