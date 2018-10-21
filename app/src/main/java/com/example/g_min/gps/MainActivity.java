@@ -216,7 +216,6 @@ public class MainActivity extends AppCompatActivity implements Observer {
 
             ((TextView) convertView.findViewById(R.id.instavelocity)).setText(data[6]);
 
-            convertView.setBackgroundColor(R.drawable.yellow);
 
             return convertView;
         }
