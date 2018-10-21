@@ -31,17 +31,17 @@ public class LocationHandler
                 == PackageManager.PERMISSION_GRANTED) {
             lm.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER,
-                    0,
+                    5000,
                     0,
                     this);
             lm.requestLocationUpdates(
                     LocationManager.NETWORK_PROVIDER,
-                    0,
+                    5000,
                     0,
                     this);
             lm.requestLocationUpdates(
                     LocationManager.PASSIVE_PROVIDER,
-                    0,
+                    5000,
                     0,
                     this);
 
