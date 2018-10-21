@@ -138,22 +138,31 @@ public class MainActivity extends AppCompatActivity implements Observer {
                     MainActivity.this.totalDistance = 0.0f;
                     MainActivity.this.btwVelocity = 0.0f;
                     MainActivity.this.totalVelocity = 0.0f;
-                    //MainActivity.this.instaVelocity = 0.0f;
+                    MainActivity.this.instaVelocity = 0.0f;
 
                     MainActivity.this.prevLoc = initLoc;
-                    data = initLoc.getLatitude() +","+initLoc.getLongitude()+"," + btwDistance
-                            +","+totalDistance +"," +btwVelocity + ","+ totalVelocity+ "," + instaVelocity;
+               //    data = initLoc.getLatitude() +","+initLoc.getLongitude()+"," + btwDistance
+                //            +","+totalDistance +"," +btwVelocity + ","+ totalVelocity+ "," + instaVelocity;
+
+                    data = initLoc.getLatitude() + "," + ";"+initLoc.getLongitude()+";" + btwDistance + " m"
+                            +";"+totalDistance + " m" + ";" +btwVelocity + " m/s" + ";"+ totalVelocity+ " m/s" +
+                            ";" + instaVelocity + " m/s";
 
                 } else {
                     MainActivity.this.btwDistance = currentLoc.distanceTo(prevLoc);
                     MainActivity.this.totalDistance = currentLoc.distanceTo(initLoc);
                     MainActivity.this.instaVelocity = currentLoc.getSpeed();
+
+                    String string = " Velocity: "+instaVelocity;
+                    Log.e(TAG, string);
+
                     MainActivity.this.btwVelocity = btwDistance / (currentLoc.getTime() - prevLoc.getTime());
                     MainActivity.this.totalVelocity = totalDistance / (currentLoc.getTime() - initLoc.getTime());
-                    data = currentLoc.getLatitude() +"," + currentLoc.getLongitude() +","+btwDistance
-                            + ","+totalDistance +"," +btwVelocity + ","+ totalVelocity + "," + instaVelocity;
-                }
 
+                    data = initLoc.getLatitude() + "," + ";"+initLoc.getLongitude()+";" + btwDistance + " m"
+                            +";"+totalDistance + " m" + ";" +btwVelocity + " m/s" + ";"+ totalVelocity+ " m/s" +
+                            ";" + instaVelocity + " m/s";
+                }
 
                 MainActivity.this.prevLoc = currentLoc;
 
@@ -196,12 +205,13 @@ public class MainActivity extends AppCompatActivity implements Observer {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            String [] data = (list.get(position).split(","));
+            String [] data = (list.get(position).split(";"));
 
 
             if(convertView == null){
                 convertView = getLayoutInflater().inflate(R.layout.the_list, null, false);
             }
+
             ((TextView) convertView.findViewById(R.id.lat)).setText(data[0]);
 
             ((TextView) convertView.findViewById(R.id.lon)).setText(data[1]);
@@ -215,7 +225,6 @@ public class MainActivity extends AppCompatActivity implements Observer {
             ((TextView) convertView.findViewById(R.id.totalvelocity)).setText(data[5]);
 
             ((TextView) convertView.findViewById(R.id.instavelocity)).setText(data[6]);
-
 
             return convertView;
         }
