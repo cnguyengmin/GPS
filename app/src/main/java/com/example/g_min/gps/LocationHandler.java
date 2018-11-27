@@ -75,6 +75,7 @@ public class LocationHandler
 
     @Override
     public void onLocationChanged(Location location) {
+        act.instaVelocity = location.getSpeed();
         setChanged();
         notifyObservers(location);
     }

@@ -8,7 +8,9 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.location.Location;
 import android.nfc.Tag;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -28,6 +30,7 @@ import java.util.Observer;
 
 public class MainActivity extends AppCompatActivity implements Observer {
     private static final String TAG = "";
+    public float instaVelocity;
     private ListView listView;
     private ArrayList<String> list;
     private Button button;
@@ -35,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
     private Location initLoc = null;
     private Location currentLoc = null;
     private Location prevLoc = null;
-    private float btwDistance, totalDistance, instaVelocity, btwVelocity, totalVelocity;
+    private float btwDistance, totalDistance, btwVelocity, totalVelocity;
     private String data;
     private boolean permissions_granted;
     private final static int PERMISSION_REQUEST_CODE = 999;
@@ -125,6 +128,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
         editor.putBoolean("CLICKED", true).apply();
 
         runOnUiThread(new Runnable() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void run() {
 
@@ -138,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
                     MainActivity.this.totalDistance = 0.0f;
                     MainActivity.this.btwVelocity = 0.0f;
                     MainActivity.this.totalVelocity = 0.0f;
-                    //MainActivity.this.instaVelocity = 0.0f;
+                    MainActivity.this.instaVelocity = 0.0f;
 
                     MainActivity.this.prevLoc = initLoc;
                     data = initLoc.getLatitude() +","+initLoc.getLongitude()+"," + btwDistance
@@ -149,6 +153,10 @@ public class MainActivity extends AppCompatActivity implements Observer {
                     MainActivity.this.totalDistance = currentLoc.distanceTo(initLoc);
                     MainActivity.this.instaVelocity = currentLoc.getSpeed();
                     MainActivity.this.btwVelocity = btwDistance / (currentLoc.getTime() - prevLoc.getTime());
+                    if(Math.abs(currentLoc.getTime() - prevLoc.getTime()) == 0){
+                        MainActivity.this.btwVelocity = 0;
+                    }
+
                     MainActivity.this.totalVelocity = totalDistance / (currentLoc.getTime() - initLoc.getTime());
                     data = currentLoc.getLatitude() +"," + currentLoc.getLongitude() +","+btwDistance
                             + ","+totalDistance +"," +btwVelocity + ","+ totalVelocity + "," + instaVelocity;
