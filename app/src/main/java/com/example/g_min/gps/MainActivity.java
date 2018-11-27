@@ -30,7 +30,7 @@ import java.util.Observer;
 
 public class MainActivity extends AppCompatActivity implements Observer {
     private static final String TAG = "";
-    public float instaVelocity;
+    //public float instaVelocity;
     private ListView listView;
     private ArrayList<String> list;
     private Button button;
@@ -39,6 +39,8 @@ public class MainActivity extends AppCompatActivity implements Observer {
     private Location currentLoc = null;
     private Location prevLoc = null;
     private float btwDistance, totalDistance, btwVelocity, totalVelocity;
+
+    public double instaVelocity;
     private String data;
     private boolean permissions_granted;
     private final static int PERMISSION_REQUEST_CODE = 999;
@@ -145,23 +147,40 @@ public class MainActivity extends AppCompatActivity implements Observer {
                     MainActivity.this.instaVelocity = 0.0f;
 
                     MainActivity.this.prevLoc = initLoc;
-                    data = initLoc.getLatitude() +","+initLoc.getLongitude()+"," + btwDistance
-                            +","+totalDistance +"," +btwVelocity + ","+ totalVelocity+ "," + instaVelocity;
+
+
+                    data = initLoc.getLatitude() + "," + ";"+initLoc.getLongitude()+";" + btwDistance + " m"
+                            +";"+totalDistance + " m" + ";" +btwVelocity + " m/s" + ";"+ totalVelocity+ " m/s" +
+                            ";" + instaVelocity + " m/s";
 
                 } else {
                     MainActivity.this.btwDistance = currentLoc.distanceTo(prevLoc);
                     MainActivity.this.totalDistance = currentLoc.distanceTo(initLoc);
-                    MainActivity.this.instaVelocity = currentLoc.getSpeed();
+
+                    /**
+                     * Refer to https://stackoverflow.com/questions/4811920/why-getspeed-always-return-0-on-android
+                     */
+                    if (prevLoc != null)
+                        MainActivity.this.instaVelocity = Math.sqrt(
+                                Math.pow(currentLoc.getLongitude() - prevLoc.getLongitude(), 2)
+                                        + Math.pow(currentLoc.getLatitude() - prevLoc.getLatitude(), 2)
+                        ) / (currentLoc.getTime() - prevLoc.getTime());
+                    //if there is speed from location
+                    if (currentLoc.hasSpeed())
+                        MainActivity.this.instaVelocity = currentLoc.getSpeed();
+
                     MainActivity.this.btwVelocity = btwDistance / (currentLoc.getTime() - prevLoc.getTime());
                     if(Math.abs(currentLoc.getTime() - prevLoc.getTime()) == 0){
                         MainActivity.this.btwVelocity = 0;
                     }
 
                     MainActivity.this.totalVelocity = totalDistance / (currentLoc.getTime() - initLoc.getTime());
-                    data = currentLoc.getLatitude() +"," + currentLoc.getLongitude() +","+btwDistance
-                            + ","+totalDistance +"," +btwVelocity + ","+ totalVelocity + "," + instaVelocity;
-                }
 
+
+                    data = initLoc.getLatitude() + "," + ";"+initLoc.getLongitude()+";" + btwDistance + " m"
+                            +";"+totalDistance + " m" + ";" +btwVelocity + " m/s" + ";"+ totalVelocity+ " m/s" +
+                            ";" + instaVelocity + " m/s";
+                }
 
                 MainActivity.this.prevLoc = currentLoc;
 
@@ -204,12 +223,13 @@ public class MainActivity extends AppCompatActivity implements Observer {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            String [] data = (list.get(position).split(","));
+            String [] data = (list.get(position).split(";"));
 
 
             if(convertView == null){
                 convertView = getLayoutInflater().inflate(R.layout.the_list, null, false);
             }
+
             ((TextView) convertView.findViewById(R.id.lat)).setText(data[0]);
 
             ((TextView) convertView.findViewById(R.id.lon)).setText(data[1]);
@@ -223,7 +243,6 @@ public class MainActivity extends AppCompatActivity implements Observer {
             ((TextView) convertView.findViewById(R.id.totalvelocity)).setText(data[5]);
 
             ((TextView) convertView.findViewById(R.id.instavelocity)).setText(data[6]);
-
 
             return convertView;
         }

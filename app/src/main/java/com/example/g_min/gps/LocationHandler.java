@@ -20,6 +20,7 @@ public class LocationHandler
     // handles location services for the device
     private LocationManager lm;
     private MainActivity act;
+    private Location location;
 
     public LocationHandler(MainActivity act) {
         this.act = act;
@@ -31,17 +32,17 @@ public class LocationHandler
                 == PackageManager.PERMISSION_GRANTED) {
             lm.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER,
-                    5000,
+                    0,
                     0,
                     this);
             lm.requestLocationUpdates(
                     LocationManager.NETWORK_PROVIDER,
-                    5000,
+                    0,
                     0,
                     this);
             lm.requestLocationUpdates(
                     LocationManager.PASSIVE_PROVIDER,
-                    5000,
+                    0,
                     0,
                     this);
 
